@@ -1,0 +1,148 @@
+<?php
+/**
+ * @var Laminas\View\Renderer\PhpRenderer $this
+ */
+?>
+<?= $this->doctype() ?>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?= $this->headTitle('Laminas MVC Skeleton')->setSeparator(' - ')->setAutoEscape(false) ?>
+
+        <?= $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <!-- Styles -->
+        <?= $this->headLink([
+                'rel' => 'shortcut icon',
+                'type' => 'image/vnd.microsoft.icon',
+                'href' => $this->basePath() . '/img/favicon.ico'
+            ])
+            ->prependStylesheet($this->basePath('css/style.css'))
+            ->prependStylesheet($this->basePath('css/bootstrap.min.css')) ?>
+
+        <!-- Scripts -->
+        <?= $this->headScript() ?>
+    </head>
+    <body>
+        <div aria-live="polite" aria-atomic="true" class="position-relative">
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100">
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-md navbar-dark mb-4" role="navigation">
+            <div class="container">
+                <a class="navbar-brand" href="<?= $this->url('home') ?>">
+                    <img src="<?= $this->basePath('img/laminas-logo.svg') ?>" alt="Laminas">
+                    <span class="navbar-text text-light">MVC Skeleton</span>
+                </a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link active"
+                                aria-current="page"
+                                href="<?= $this->url('home') ?>"
+                            >Home
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <div id="flash-message-data" class="d-none">
+                <?php
+                $messageMap = ['error', 'success', 'info', 'default'];
+                foreach ($messageMap as $namespace) {
+                    $this->flashMessenger()->setNamespace($namespace);
+                    if ($this->flashMessenger()->hasMessages()) {
+                        foreach ($this->flashMessenger()->getMessages() as $message) {
+                            printf(
+                                '<div data-namespace="%s">%s</div>',
+                                $this->escapeHtml($namespace),
+                                $this->escapeHtml($message)
+                            );
+                        }
+                    }
+                    $this->flashMessenger()->clearMessagesFromNamespace($namespace);
+                }
+                ?>
+            </div>
+            <?= $this->content ?>
+            <hr>
+            <footer>
+                <p>
+                    &copy; <?= date('Y') ?>
+                    <a href="https://getlaminas.org/">Laminas Project</a> a Series of LF Projects, LLC.
+                </p>
+            </footer>
+        </div>
+        <?= $this->inlineScript()
+            ->prependFile($this->basePath('js/bootstrap.min.js')) ?>
+    </body>
+</html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const flashMessagesContainer = document.getElementById('flash-message-data');
+        const toastContainer = document.querySelector('.toast-container');
+
+        const messages = flashMessagesContainer.querySelectorAll('div[data-namespace]');
+
+        messages.forEach(messageEl => {
+            const namespace = messageEl.getAttribute('data-namespace');
+            const messageText = messageEl.innerHTML;
+
+            const toastDetails = {
+                'success': { headerClass: 'bg-success text-white', icon: '✅' },
+                'error':   { headerClass: 'bg-danger text-white',  icon: '❌' },
+                'info':    { headerClass: 'bg-info text-white',    icon: 'ℹ️' },
+                'default': { headerClass: 'bg-secondary text-white', icon: '🔔' }
+            };
+
+            const details = toastDetails[namespace] || toastDetails['default'];
+
+            const toastHTML = `
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header ${details.headerClass}">
+                    <strong class="me-auto">${details.icon} Notificação</strong>
+                    <small>agora mesmo</small>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${messageText}
+                </div>
+            </div>
+        `;
+
+            toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+
+            const newToastEl = toastContainer.lastElementChild;
+
+            if (newToastEl) {
+                const toast = new bootstrap.Toast(newToastEl, {
+                    autohide: true,
+                    delay: 5000
+                });
+                toast.show();
+
+                newToastEl.addEventListener('hidden.bs.toast', () => {
+                    newToastEl.remove();
+                });
+            }
+        });
+    });
+</script>

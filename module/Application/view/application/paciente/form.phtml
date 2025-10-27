@@ -1,0 +1,505 @@
+<?php
+$this->headTitle($this->title);
+
+$actionUrl = $this->id
+    ? $this->url('paciente', ['action' => 'editar', 'id' => $this->id])
+    : $this->url('paciente', ['action' => 'cadastrar']);
+
+$this->form->setAttribute('action', $actionUrl);
+
+$this->form->prepare();
+$responsiblesCollection = $this->form->get("responsaveis");
+$enderecoFieldset = $this->form->get("endereco");
+?>
+<style>
+    .photo-container {
+        width: 150px;
+        height: 150px;
+        border: 2px solid #ddd;
+        border-radius: 50%;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    .responsible-item { cursor: pointer; }
+    .responsible-item:hover { background-color: #f8f9fa; }
+</style>
+<?= $this->form()->openTag($this->form); ?>
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4 class="mb-0"><?= $this->escapeHtml($this->title) ?></h4>
+                    <ul class="nav nav-tabs card-header-tabs" id="patientTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info-tab-pane" type="button" role="tab" aria-controls="info-tab-pane" aria-selected="true">
+                                Dados do Paciente
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="address-tab" data-bs-toggle="tab" data-bs-target="#address-tab-pane" type="button" role="tab" aria-controls="address-tab-pane" aria-selected="false">
+                                Endereço
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body p-4">
+                    <div class="tab-content" id="patientTabContent">
+
+                        <div class="tab-pane fade show active" id="info-tab-pane" role="tabpanel" aria-labelledby="info-tab" tabindex="0">
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <div class="photo-container mb-3">
+                                        <?php
+
+                                        $photoPath = '/uploads/default_img.jpeg';
+
+                                        if (isset($this->paciente) && $this->paciente->getPessoa()->getFoto()) {
+                                            $photoPath = '/uploads/' . $this->paciente->getPessoa()->getFoto();
+                                        }
+                                        ?>
+
+                                        <img id="photo-preview" src="<?= $this->escapeHtmlAttr($photoPath) ?>"
+                                             alt="Foto do paciente"
+                                             class="rounded-circle"
+                                             style="width: 150px; height: 150px; object-fit: cover;">
+                                    </div>
+                                    <?=$this->formElement($form->get('foto')); ?>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-6 mb-3">
+                                    <?= $this->formLabel($form->get('nome')) ?>
+                                    <?= $this->formElement($form->get('nome')) ?>
+                                    <div class="invalid-feedback"><?= $this->formElementErrors($form->get('nome')) ?></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <?= $this->formLabel($form->get('nascimento')) ?>
+                                    <?= $this->formElement($form->get('nascimento')) ?>
+                                    <div class="invalid-feedback"><?= $this->formElementErrors($form->get('nascimento')) ?></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <?= $this->formLabel($form->get('cpf')) ?>
+                                    <?= $this->formElement($form->get('cpf')) ?>
+                                    <div class="invalid-feedback"><?= $this->formElementErrors($form->get('cpf')) ?></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <?= $this->formLabel($form->get('rg')) ?>
+                                    <?= $this->formElement($form->get('rg')) ?>
+                                    <div class="invalid-feedback"><?= $this->formElementErrors($form->get('rg')) ?></div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <?= $this->formLabel($form->get('telefone')) ?>
+                                    <?= $this->formElement($form->get('telefone')) ?>
+                                    <div class="invalid-feedback"><?= $this->formElementErrors($form->get('telefone')) ?></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="address-tab-pane" role="tabpanel" aria-labelledby="address-tab" tabindex="0">
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <?= $this->formLabel($enderecoFieldset->get('cep')) ?>
+                                    <?= $this->formElement($enderecoFieldset->get('cep')) ?>
+                                    <div class="invalid-feedback"><?= $this->formElementErrors($enderecoFieldset->get('cep')) ?></div>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <?= $this->formLabel($enderecoFieldset->get('rua')) ?>
+                                    <?= $this->formElement($enderecoFieldset->get('rua')) ?>
+                                    <div class="invalid-feedback"><?= $this->formElementErrors($enderecoFieldset->get('rua')) ?></div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <?= $this->formLabel($enderecoFieldset->get('numero')) ?>
+                                    <?= $this->formElement($enderecoFieldset->get('numero')) ?>
+                                    <div class="invalid-feedback"><?= $this->formElementErrors($enderecoFieldset->get('numero')) ?></div>
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    <?= $this->formLabel($enderecoFieldset->get('estado')) ?>
+                                    <?= $this->formElement($enderecoFieldset->get('estado')) ?>
+                                    <div class="invalid-feedback"><?= $this->formElementErrors($enderecoFieldset->get('estado')) ?></div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <?= $this->formLabel($enderecoFieldset->get('cidade')) ?>
+                                    <?php
+                                        $cityElement = $enderecoFieldset->get('cidade');
+
+                                        $preselectedCityId = $cityElement->getValue();
+                                        if ($preselectedCityId) {
+                                            $cityElement->setAttribute('data-preselected-id', $preselectedCityId);
+                                        }
+
+                                        echo $this->formElement($cityElement);
+                                    ?>
+                                    <div class="invalid-feedback"><?= $this->formElementErrors($enderecoFieldset->get('cidade')) ?></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="responsible-hidden-container" class="d-none">
+                    <?php
+                    $index = 0;
+                    foreach ($responsiblesCollection as $fieldset) :
+                        $fieldset->setAttribute('data-index', $index);
+                        ?>
+                        <fieldset data-index="<?= $fieldset->getAttribute('data-index') ?>">
+                            <?php
+                            if ($fieldset->getLabel()) {
+                                echo '<legend>' . $this->escapeHtml($fieldset->getLabel()) . '</legend>';
+                            }
+
+                            foreach ($fieldset as $element) {
+                                echo $this->formRow($element);
+                            }
+                            ?>
+                        </fieldset>
+                        <?php
+
+                        $index++;
+                    endforeach;
+
+                    echo $this->formCollection()->renderTemplate($responsiblesCollection);
+                    ?>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-around">
+                        <a href="#" class="btn btn-warning">Voltar</a>
+                        <?= $this->formElement($form->get('submit')) ?>
+                    </div>
+                </div>
+            </div>
+        </div>S
+    </div>
+</div>
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow-sm">
+            </div>
+        </div>
+
+        <div class="col-md-8 col-lg-7 mt-4">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Responsáveis</h5>
+                    <button type="button" id="add-responsible-btn" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#responsibleModal">
+                        <i class="fas fa-plus"></i> Adicionar Responsável
+                    </button>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group" id="responsible-list-container">
+                        <li class="list-group-item text-muted no-responsibles">Nenhum responsável adicionado.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="responsibleModal" tabindex="-1" aria-labelledby="responsibleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="responsibleModalLabel">Adicionar Responsável</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="save-responsible-btn">Salvar Responsável</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?= $this->form()->closeTag(); ?>
+
+<script src="/js/imask/dist/imask.min.js"></script>
+<script>
+
+    document.querySelector('input[name="foto"]').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('photo-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        //Lógica validação formulário
+        const forms = document.querySelectorAll('.needs-validation');
+
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+
+        //Lógica mascaras
+        const maskDefinitions = {
+            cep: { mask: '00000-000' },
+            cpf: { mask: '000.000.000-00' },
+            rg: { mask: '00.000.000-0' },
+            date: {
+                mask: 'd/m/Y',
+                pattern: 'd/m/Y',
+
+                lazy: true,
+                blocks: {
+                    d: {
+                        mask: IMask.MaskedRange,
+                        from: 1,
+                        to: 31,
+                        maxLength: 2,
+                    },
+                    m: {
+                        mask: IMask.MaskedRange,
+                        from: 1,
+                        to: 12,
+                        maxLength: 2,
+                    },
+                    Y: {
+                        mask: IMask.MaskedRange,
+                        from: 1900,
+                        to: new Date().getFullYear(),
+                        maxLength: 4,
+                    }
+                },
+                autofix: true,
+                overwrite: true,
+            },
+            phone: {
+                mask: [
+                    { mask: '(00) 0000-0000' },
+                    { mask: '(00) 00000-0000' }
+                ]
+            }
+        };
+
+        function applyMasks(parentElement) {
+            const elementsToMask = parentElement.querySelectorAll('[data-mask]');
+            elementsToMask.forEach(el => {
+                const maskName = el.getAttribute('data-mask');
+                if (maskDefinitions[maskName]) {
+                    IMask(el, maskDefinitions[maskName]);
+                }
+            });
+        }
+
+        applyMasks(document.body);
+
+        //Lógica modal
+        const hiddenContainer = document.getElementById('responsible-hidden-container');
+        const listContainer = document.getElementById('responsible-list-container');
+        const modalElement = document.getElementById('responsibleModal');
+        const modalBody = modalElement.querySelector('.modal-body');
+        const saveButton = document.getElementById('save-responsible-btn');
+        const noResponsiblesMessage = listContainer.querySelector('.no-responsibles');
+        const responsibleModal = new bootstrap.Modal(modalElement);
+
+        let responsibleCount = hiddenContainer.querySelectorAll(':scope > fieldset').length;
+
+        modalElement.addEventListener('show.bs.modal', function () {
+            const newFieldsetHtml = `
+                <fieldset class="needs-validation" novalidate data-index="${responsibleCount}">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label>Nome Completo do Responsável</label>
+                            <input type="text" name="responsaveis[${responsibleCount}][nome]" required class="form-control">
+                            <div class="invalid-feedback">Campo obrigatório.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>RG</label>
+                            <input type="text" name="responsaveis[${responsibleCount}][rg]" class="form-control" data-mask="rg">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>CPF</label>
+                            <input type="text" name="responsaveis[${responsibleCount}][cpf]" required class="form-control" data-mask="cpf">
+                            <div class="invalid-feedback">CPF inválido.</div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label>Telefone de Contato</label>
+                            <input type="text" name="responsaveis[${responsibleCount}][telefone]" required class="form-control" data-mask="phone">
+                            <div class="invalid-feedback">Telefone inválido.</div>
+                        </div>
+                    </div>
+                </fieldset>
+            `;
+            modalBody.innerHTML = newFieldsetHtml;
+            applyMasks(modalBody);
+
+            const fieldset = modalBody.querySelector('fieldset');
+            if (fieldset) {
+                fieldset.classList.remove('was-validated');
+            }
+        });
+
+        saveButton.addEventListener('click', function() {
+            const fieldsetElement = modalBody.querySelector('fieldset');
+            if (!fieldsetElement) return;
+
+            let isModalValid = true;
+            const requiredInputs = fieldsetElement.querySelectorAll('[required]');
+
+            requiredInputs.forEach(input => {
+                if (!input.checkValidity()) {
+                    isModalValid = false;
+                }
+            });
+
+            fieldsetElement.classList.add('was-validated');
+
+            if (!isModalValid) {
+                return;
+            }
+
+            const nameInput = fieldsetElement.querySelector('[name*="[nome]"]');
+            const cpfInput = fieldsetElement.querySelector('[name*="[cpf]"]');
+            const responsibleName = nameInput.value.trim();
+            const responsibleCpf = cpfInput.value.trim();
+
+            hiddenContainer.appendChild(fieldsetElement);
+
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center', 'responsible-item');
+            listItem.setAttribute('data-index', responsibleCount);
+
+            listItem.innerHTML = `
+                <span>
+                    <strong>${responsibleName}</strong><br>
+                    <small class="text-muted">CPF: ${responsibleCpf}</small>
+                </span>
+                <button type="button" class="btn btn-sm btn-outline-danger btn-remove-responsible">Remover</button>
+            `;
+
+            listContainer.appendChild(listItem);
+
+            if (noResponsiblesMessage) noResponsiblesMessage.remove();
+
+            responsibleCount++;
+            responsibleModal.hide();
+        });
+
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            modalBody.innerHTML = '';
+        });
+
+        listContainer.addEventListener('click', function(event) {
+            const removeButton = event.target.closest('.btn-remove-responsible');
+            if (removeButton) {
+                const listItem = removeButton.closest('.responsible-item');
+                const indexToRemove = listItem.getAttribute('data-index');
+
+                listItem.remove();
+
+                const fieldsetToRemove = hiddenContainer.querySelector('fieldset[data-index="' + indexToRemove + '"]');
+
+                if (fieldsetToRemove) {
+                    fieldsetToRemove.remove();
+                }
+
+                if (listContainer.children.length === 0 && noResponsiblesMessage) {
+                    listContainer.appendChild(noResponsiblesMessage);
+                }
+            }
+        });
+
+        // Função para hidratar a lista de responsáveis ao carregar a página
+        function hydrateResponsibleList() {
+            const existingFieldsets = hiddenContainer.querySelectorAll('fieldset');
+
+            if (existingFieldsets.length > 0) {
+                noResponsiblesMessage.remove();
+            }
+
+            existingFieldsets.forEach(fieldset => {
+                const index = fieldset.getAttribute('data-index');
+                const nameInput = fieldset.querySelector('[name*="[nome]"]');
+                const cpfInput = fieldset.querySelector('[name*="[cpf]"]');
+
+                if (!nameInput || !cpfInput) return;
+
+                const responsibleName = nameInput.value;
+                const responsibleCpf = cpfInput.value;
+
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center', 'responsible-item');
+                listItem.setAttribute('data-index', index);
+                listItem.innerHTML = `
+                    <span>
+                        <strong>${responsibleName}</strong><br>
+                        <small class="text-muted">CPF: ${responsibleCpf}</small>
+                    </span>
+                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove-responsible">Remover</button>
+                `;
+                listContainer.appendChild(listItem);
+            });
+        }
+
+        hydrateResponsibleList();
+
+        //Lógica selects dependentes (estado/cidade)
+        const stateSelect = document.getElementById('state-select');
+        const citySelect = document.getElementById('city-select');
+
+        function loadCitiesForState(stateId, preselectedCityId = null) {
+            citySelect.innerHTML = '<option value="">Carregando...</option>';
+            citySelect.disabled = true;
+
+            if (!stateId) {
+                citySelect.innerHTML = '<option value="">Selecione um Estado primeiro...</option>';
+                return;
+            }
+
+            fetch(`/api/cidades/${stateId}`)
+                .then(response => response.json())
+                .then(data => {
+                    citySelect.innerHTML = '<option value="">Selecione uma Cidade...</option>';
+
+                    data.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city.id;
+                        option.textContent = city.nome;
+                        citySelect.appendChild(option);
+                    });
+
+                    if (preselectedCityId) {
+                        citySelect.value = preselectedCityId;
+                    }
+
+                    citySelect.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar cidades:', error);
+                    citySelect.innerHTML = '<option value="">Erro ao carregar cidades</option>';
+                });
+        }
+
+        if (stateSelect && citySelect) {
+            stateSelect.addEventListener('change', function() {
+                loadCitiesForState(this.value);
+            });
+
+            const initialStateId = stateSelect.value;
+            const preselectedCityId = citySelect.getAttribute('data-preselected-id');
+
+            if (initialStateId) {
+                loadCitiesForState(initialStateId, preselectedCityId);
+            }
+        }
+    });
+
+</script>
