@@ -1,0 +1,49 @@
+<?php $this->headTitle('Gerenciar Leitos'); ?>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Leitos Cadastrados</h1>
+        <a href="<?= $this->url('leitos', ['action' => 'cadastrar']) ?>" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Novo Leito
+        </a>
+    </div>
+
+    <?php if (empty($leitos)) : ?>
+        <div class="alert alert-info">Nenhum leito cadastrado.</div>
+    <?php else : ?>
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Número</th>
+                <th>Setor</th>
+                <th>Dispositivo (ESP32)</th>
+                <th>Pino</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($leitos as $leito) :
+                $pino = $leito->getPino();
+                $esp32 = $pino->getEsp32();
+                $espFriendlyName = $esp32->getNomeAmigavel()
+                    ? sprintf('%s (%s)', $esp32->getNomeAmigavel(), $esp32->getMacAddress())
+                    : $esp32->getMacAddress();
+                ?>
+                <tr>
+                    <td><?= $this->escapeHtml($leito->getNumero()) ?></td>
+                    <td><?= $this->escapeHtml($leito->getSetor()) ?></td>
+                    <td><?= $this->escapeHtml($espFriendlyName) ?></td>
+                    <td><?= $this->escapeHtml($pino->getNumeroPino()) ?></td>
+                    <td>
+                        <a href="<?= $this->url('leitos', ['action' => 'editar', 'id' => $leito->getId()]) ?>" class="btn btn-sm btn-outline-secondary" title="Editar">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar</i>
+                        </a>
+                        <a href="<?= $this->url('leitos', ['action' => 'excluir', 'id' => $leito->getId()]) ?>" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir o leito <?= $this->escapeJs($leito->getNumero()) ?>?')">
+                            <i class="fas fa-trash"></i> Excluir
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+</div>

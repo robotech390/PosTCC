@@ -4,6 +4,7 @@ namespace Application\Command;
 use Application\Entity\ESP32;
 use Application\Entity\Leito;
 use Application\Entity\Paciente;
+use Application\Entity\PacienteStatus;
 use Application\Entity\Pino;
 use Doctrine\ORM\EntityManager;
 use PhpMqtt\Client\MqttClient;
@@ -35,9 +36,6 @@ class ListenMqttCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
-        error_reporting(E_ALL);
-        ini_set('display_errors', '1');
 
         $io = new SymfonyStyle($input, $output);
         $io->title('Iniciando Listener MQTT');
@@ -72,50 +70,43 @@ class ListenMqttCommand extends Command
                 $macAddress = trim($data['mac_address']);
                 $numeroPino = (int) $data['pino'];
                 $evento = trim($data['evento']);
+                $timestampDispositivo = isset($data['timestamp']) ? (int) $data['timestamp'] : null;
 
                 $esp32Repo = $this->entityManager->getRepository(ESP32::class);
                 $esp32 = $esp32Repo->findOneBy(['macAddress' => $macAddress]);
+                $isNewEsp = false;
 
                 if (!$esp32) {
                     $io->note("ESP32 [{$macAddress}] não encontrado. Criando novo.");
+                    $esp32 = new ESP32();
+                    $esp32->setMacAddress($macAddress);
+                    $this->entityManager->persist($esp32);
 
-                    try {
-
-                        $qntEsp = count($esp32Repo->findAll()) + 1;
-
-                        $esp32 = new ESP32();
-                        $esp32->setMacAddress($macAddress);
-                        $esp32->setNomeAmigavel("Dispositivo - {$qntEsp}");
-
-                        $this->entityManager->persist($esp32);
-                        $this->entityManager->flush();
-
-                    }catch (\Exception $e) {
-                        $io->error("Erro ao criar novo ESP32 para MAC [{$macAddress}]: " . $e->getMessage());
-                        return;
-                    }
-
-                    $io->info("Novo ESP32 ID [{$esp32->getId()}] criado.");
-                    $io->warning("Pino [{$numeroPino}] do novo ESP32 [{$macAddress}] ainda não está cadastrado no sistema. Ignorando evento.");
+                    $isNewEsp = true;
 
                 } else {
                     $io->text("ESP32 ID [{$esp32->getId()}] encontrado.");
                 }
 
                 $pinoRepo = $this->entityManager->getRepository(Pino::class);
-                $pino = $pinoRepo->findOneBy(['esp32' => $esp32, 'numeroPino' => $numeroPino]);
+                $pino = null;
+                if (!$isNewEsp) {
+                    $pino = $pinoRepo->findOneBy(['esp32' => $esp32, 'numeroPino' => $numeroPino]);
+                }
 
                 if (!$pino) {
-                     $io->note("Criando registro para o pino {$numeroPino}...");
-                     $pino = new Pino();
-                     $pino->setEsp32($esp32);
-                     $pino->setNumeroPino($numeroPino);
+                    $io->note("Pino número [{$numeroPino}] não encontrado para ESP32 [{$macAddress}]. Criando novo registro de Pino.");
+                    $pino = new Pino();
+                    $pino->setEsp32($esp32);
+                    $pino->setNumeroPino($numeroPino);
+                    $this->entityManager->persist($pino);
 
-                     $this->entityManager->persist($pino);
-                     $this->entityManager->flush();
+                    $io->info("Novo Pino preparado para persistência (ESP: {$macAddress}, Pino: {$numeroPino}).");
+                    $io->warning("Pino recém-criado. Nenhum leito associado ainda. Ignorando evento '{$evento}'.");
 
-                     $io->info("Pino ID [{$pino->getId()}] criado.");
-
+                    $this->entityManager->flush();
+                    $this->entityManager->clear();
+                    return;
                 } else {
                     $io->text("Entidade Pino ID [{$pino->getId()}] (GPIO {$pino->getNumeroPino()}) encontrada.");
                 }
@@ -137,16 +128,27 @@ class ListenMqttCommand extends Command
                     return;
                 }
 
-                $paciente->setUltimoStatus($evento);
-                $paciente->setDataUltimoStatus(new \DateTime());
+                $io->text("Registrando status para Paciente ID [{$paciente->getId()}]...");
 
-                $this->entityManager->flush();
+                $statusRecord = new PacienteStatus();
+                $statusRecord->setPaciente($paciente);
+                $statusRecord->setEvento($evento);
+                $statusRecord->setPinoOrigem($pino);
+
+                if ($timestampDispositivo !== null) {
+                    $statusRecord->setTimestampDispositivo($timestampDispositivo);
+                }
+
+                $this->entityManager->persist($statusRecord);
+                $this->entityManager->flush(); // Salva o registro de status
                 $this->entityManager->clear();
 
-                $io->success("Status do Paciente [{$paciente->getPessoa()->getNome()}] no Leito [{$leito->getNumero()}] atualizado para '{$evento}'.");
-
+                $io->success("Histórico Status p/ Paciente [{$paciente->getPessoa()->getNome()}] no Leito [{$leito->getNumero()}]: '{$evento}'.");
             } catch (\Exception $e) {
-                $io->error("Erro ao processar mensagem: " . $e->getMessage());
+                $io->error("Erro GERAL no processamento: " . $e->getMessage() . " em " . $e->getFile() . ":" . $e->getLine());
+                if ($this->entityManager->isOpen()) {
+                    try { $this->entityManager->clear(); } catch (\Exception $clearEx) {}
+                }
             }
         }, 0);
 

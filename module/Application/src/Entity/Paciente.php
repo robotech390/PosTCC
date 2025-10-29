@@ -39,6 +39,16 @@ class Paciente
      */
     private Collection $responsaveis;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private \DateTime $nascimento;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Leito", mappedBy="paciente")
+     */
+    private ?Leito $leito = null;
+
     public function __construct()
     {
         $this->responsaveis = new ArrayCollection();
@@ -72,6 +82,16 @@ class Paciente
     public function getResponsaveis(): Collection
     {
         return $this->responsaveis;
+    }
+
+    public function getLeito(): ?Leito
+    {
+        return $this->leito;
+    }
+
+    public function setLeito(Leito $leito): void
+    {
+        $this->leito = $leito;
     }
 
     public function addResponsavel(Pessoa $pessoa): void

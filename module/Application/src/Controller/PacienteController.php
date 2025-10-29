@@ -5,9 +5,9 @@ namespace Application\Controller;
 use Application\Entity\Cidade;
 use Application\Entity\Endereco;
 use Application\Entity\Estado;
+use Application\Entity\Leito;
 use Application\Entity\Paciente;
 use Application\Entity\Pessoa;
-use Application\Entity\Responsavel;
 use Application\Form\PessoaForm;
 use Doctrine\ORM\EntityManager;
 use Laminas\Mvc\Controller\AbstractActionController;
@@ -104,6 +104,20 @@ class PacienteController extends AbstractActionController
                 $paciente = new Paciente();
                 $paciente->setPessoa($pessoa);
                 $paciente->setEndereco($endereco);
+
+                $leitoId = $data['leito'] ?? null;
+                if ($leitoId) {
+
+                    $leitoSelecionado = $this->entityManager->find(Leito::class, $leitoId);
+
+                    if ($leitoSelecionado && $leitoSelecionado->getPaciente() === null) {
+                        $paciente->setLeito($leitoSelecionado);
+                        $leitoSelecionado->setPaciente($paciente);
+
+                    } else {
+                        $this->flashMessenger()->addWarningMessage('O leito selecionado não estava disponível. O paciente foi cadastrado sem leito.');
+                    }
+                }
 
                 foreach ($data['responsaveis'] as $respData) {
                     $cpfLimpo = preg_replace('/[^0-9]/', '', $respData['cpf']);
@@ -219,6 +233,33 @@ class PacienteController extends AbstractActionController
                     $endereco->setEstado($estado);
                 }
 
+                $novoLeitoId = $data['leito'] ?? null;
+                $leitoAtual = $paciente->getLeito();
+                $novoLeito = null;
+
+                if ($novoLeitoId) {
+                    $novoLeito = $this->entityManager->find(Leito::class, $novoLeitoId);
+                }
+
+                if (($leitoAtual ? $leitoAtual->getId() : null) !== ($novoLeito ? $novoLeito->getId() : null))
+                {
+                    if ($leitoAtual) {
+                        $leitoAtual->setPaciente(null);
+                    }
+
+                    if ($novoLeito) {
+                        if ($novoLeito->getPaciente() === null) {
+                            $paciente->setLeito($novoLeito);
+                            $novoLeito->setPaciente($paciente);
+                        } else {
+                            $paciente->setLeito(null);
+                            $this->flashMessenger()->addWarningMessage("O leito selecionado ({$novoLeito->getNumero()}) foi ocupado por outro paciente. Alteração de leito não realizada.");
+                        }
+                    } else {
+                        $paciente->setLeito(null);
+                    }
+                }
+
                 $paciente->getResponsaveis()->clear();
 
                 foreach ($data['responsaveis'] as $respData) {
@@ -276,11 +317,28 @@ class PacienteController extends AbstractActionController
                 ];
             }
 
-            $form->setData(array_merge(
+            $leitoIdAtual = $paciente->getLeito() ? $paciente->getLeito()->getId() : null;
+
+            $formData = array_merge(
                 $pessoaData,
                 ['endereco' => $enderecoData],
-                ['responsaveis' => $responsaveisData]
-            ));
+                ['responsaveis' => $responsaveisData],
+                ['leito' => $leitoIdAtual]
+            );
+
+            $form->setData($formData);
+
+            if ($leitoAtual = $paciente->getLeito()) {
+
+                $leitoSelect = $form->get('leito');
+                $options = $leitoSelect->getValueOptions();
+
+                if (!isset($options[$leitoAtual->getId()])) {
+                    $options[$leitoAtual->getId()] = sprintf('%s - %s (Atual)', $leitoAtual->getSetor(), $leitoAtual->getNumero());
+                    uksort($options, function($a, $b) use ($options) { return strnatcmp($options[$a], $options[$b]); });
+                    $leitoSelect->setValueOptions($options);
+                }
+            }
         }
 
         $viewModel = new ViewModel([

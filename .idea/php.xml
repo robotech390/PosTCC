@@ -155,6 +155,8 @@
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-cli" />
       <path value="$PROJECT_DIR$/vendor/php-mqtt/client" />
       <path value="$PROJECT_DIR$/vendor/myclabs/php-enum" />
+      <path value="$PROJECT_DIR$/vendor/fontawesome/webfonts" />
+      <path value="$PROJECT_DIR$/vendor/fontawesome/css" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1">

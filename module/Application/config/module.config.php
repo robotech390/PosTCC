@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Application;
 
+use Application\Controller\Factory\LeitoControllerFactory;
 use Application\Controller\Factory\PacienteControllerFactory;
+use Application\Controller\LeitoController;
 use Application\Form\EnderecoFieldset;
 use Application\Form\Factory\EnderecoFieldsetFactory;
+use Application\Form\Factory\LeitoFormFactory;
+use Application\Form\LeitoForm;
 use Application\Form\PessoaForm;
 use Application\Form\ResponsavelFieldset;
 use Laminas\Router\Http\Literal;
@@ -50,6 +54,19 @@ return [
                     ],
                 ],
             ],
+            'api-pinos' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/pinos/:esp32_id',
+                    'constraints' => [
+                        'esp32_id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\LeitoController::class,
+                        'action'     => 'getPinos',
+                    ],
+                ],
+            ],
             'paciente' => [
                 'type'    => Segment::class,
                 'options' => [
@@ -64,12 +81,27 @@ return [
                     ],
                 ],
             ],
+            'leitos' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/leitos[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\LeitoController::class,
+                        'action'     => 'listar',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\PacienteController::class => PacienteControllerFactory::class,
+            LeitoController::class => LeitoControllerFactory::class,
         ],
     ],
     'doctrine' => [
@@ -92,6 +124,7 @@ return [
         'form_elements' => [
             'factories' => [
                 PessoaForm::class => InvokableFactory::class,
+                LeitoForm::class => LeitoFormFactory::class,
                 EnderecoFieldset::class => EnderecoFieldsetFactory::class,
                 ResponsavelFieldset::class => InvokableFactory::class,
             ],

@@ -2,11 +2,13 @@
 
 namespace Application\Form;
 
+use Application\Entity\Leito;
 use Doctrine\ORM\EntityManager;
 use Laminas\Form\Element\Collection;
 use Laminas\Form\Element\Email;
 use Laminas\Form\Element\File;
 use Laminas\Form\Element\Hidden;
+use Laminas\Form\Element\Select;
 use Laminas\Form\Element\Submit;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Form;
@@ -121,6 +123,19 @@ class PessoaForm extends Form implements InputFilterProviderInterface
             ],
         ]);
 
+        $this->add([
+            'name' => 'leito',
+            'type' => Select::class,
+            'options' => [
+                'label' => 'Leito Atual',
+                'empty_option' => 'Nenhum / Vago',
+                'value_options' => $this->getAvailableLeitosOptions(),
+            ],
+            'attributes' => [
+                'class' => 'form-select',
+            ],
+        ]);
+
         $enderecoFieldset = new EnderecoFieldset($this->entityManager);
         $enderecoFieldset->init();
         $this->add($enderecoFieldset);
@@ -147,6 +162,26 @@ class PessoaForm extends Form implements InputFilterProviderInterface
                 'class' => 'btn btn-success',
             ],
         ]);
+    }
+
+    private function getAvailableLeitosOptions(): array
+    {
+        $options = [];
+        $leitoRepo = $this->entityManager->getRepository(Leito::class);
+
+        $queryBuilder = $leitoRepo->createQueryBuilder('l')
+            ->where('l.paciente IS NULL')
+            ->orderBy('l.setor', 'ASC')
+            ->addOrderBy('l.numero', 'ASC');
+
+        $leitosDisponiveis = $queryBuilder->getQuery()->getResult();
+
+        /** @var Leito $leito */
+        foreach ($leitosDisponiveis as $leito) {
+            $options[$leito->getId()] = sprintf('%s - %s', $leito->getSetor(), $leito->getNumero());
+        }
+
+        return $options;
     }
 
     public function getInputFilterSpecification(): array

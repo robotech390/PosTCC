@@ -95,6 +95,14 @@ $enderecoFieldset = $this->form->get("endereco");
                                     <?= $this->formElement($form->get('telefone')) ?>
                                     <div class="invalid-feedback"><?= $this->formElementErrors($form->get('telefone')) ?></div>
                                 </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-12 mb-3">
+                                        <?= $this->formLabel($form->get('leito')) ?>
+                                        <?= $this->formElement($form->get('leito')) ?>
+                                        <div class="invalid-feedback"><?= $this->formElementErrors($form->get('leito')) ?></div>
+                                        <small class="form-text text-muted">Selecione o leito que o paciente está ocupando ou deixe em "Nenhum".</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

@@ -1,0 +1,123 @@
+<?php
+$this->headTitle($this->title);
+$form = $this->form;
+
+$actionUrl = $this->id
+    ? $this->url('leitos', ['action' => 'editar', 'id' => $this->id])
+    : $this->url('leitos', ['action' => 'cadastrar']);
+$form->setAttribute('action', $actionUrl);
+$form->prepare();
+?>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4 class="mb-0"><?= $this->escapeHtml($this->title) ?></h4>
+                </div>
+                <div class="card-body">
+                    <?= $this->form()->openTag($form) ?>
+
+                    <?php if ($this->id) :  ?>
+                        <?= $this->formElement($form->get('id')) ?>
+                    <?php endif; ?>
+
+                    <div class="mb-3">
+                        <?= $this->formLabel($form->get('numero')) ?>
+                        <?= $this->formElement($form->get('numero')) ?>
+                        <div class="invalid-feedback"><?= $this->formElementErrors($form->get('numero')) ?></div>
+                    </div>
+                    <div class="mb-3">
+                        <?= $this->formLabel($form->get('setor')) ?>
+                        <?= $this->formElement($form->get('setor')) ?>
+                        <div class="invalid-feedback"><?= $this->formElementErrors($form->get('setor')) ?></div>
+                    </div>
+                    <div class="mb-3">
+                        <?= $this->formLabel($form->get('esp32')) ?>
+                        <?= $this->formElement($form->get('esp32')) // ID já está como 'esp32-select' ?>
+                        <div class="invalid-feedback"><?= $this->formElementErrors($form->get('esp32')) ?></div>
+                    </div>
+                    <div class="mb-3">
+                        <?= $this->formLabel($form->get('pino')) ?>
+                        <?php
+                        $pinoElement = $form->get('pino');
+                        $preselectedPinoId = $pinoElement->getValue();
+                        if ($preselectedPinoId) {
+                            $pinoElement->setAttribute('data-preselected-id', $preselectedPinoId);
+                        }
+                        echo $this->formElement($pinoElement);
+                        ?>
+                        <div class="invalid-feedback"><?= $this->formElementErrors($form->get('pino')) ?></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="<?= $this->url('leitos') ?>" class="btn btn-secondary mt-3">Cancelar</a>
+                        <?= $this->formSubmit($form->get('submit')) ?>
+                    </div>
+
+                    <?= $this->form()->closeTag() ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const esp32Select = document.getElementById('esp32-select');
+        const pinoSelect = document.getElementById('pino-select');
+
+        function loadPinosForEsp32(esp32Id, preselectedPinoId = null) {
+            pinoSelect.innerHTML = '<option value="">Carregando pinos...</option>';
+            pinoSelect.disabled = true;
+
+            if (!esp32Id) {
+                pinoSelect.innerHTML = '<option value="">Selecione um ESP32 primeiro...</option>';
+                return;
+            }
+
+            fetch(`/api/pinos/${esp32Id}`) // Chama a nova API
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    pinoSelect.innerHTML = '<option value="">Selecione um pino...</option>';
+
+                    if (data.length === 0) {
+                        pinoSelect.innerHTML = '<option value="">Nenhum pino registrado para este ESP</option>';
+                        return;
+                    }
+
+                    data.forEach(pino => {
+                        const option = document.createElement('option');
+                        option.value = pino.id; // Valor é o ID da entidade Pino
+                        option.textContent = `Pino ${pino.numero}`; // Texto exibido
+                        pinoSelect.appendChild(option);
+                    });
+
+                    if (preselectedPinoId) {
+                        pinoSelect.value = preselectedPinoId;
+                    }
+
+                    pinoSelect.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar pinos:', error);
+                    pinoSelect.innerHTML = '<option value="">Erro ao carregar pinos</option>';
+                });
+        }
+
+        esp32Select.addEventListener('change', function() {
+            loadPinosForEsp32(this.value);
+        });
+
+        const initialEsp32Id = esp32Select.value;
+        const preselectedPinoId = pinoSelect.getAttribute('data-preselected-id');
+
+        if (initialEsp32Id) {
+            loadPinosForEsp32(initialEsp32Id, preselectedPinoId);
+        }
+    });
+</script>
