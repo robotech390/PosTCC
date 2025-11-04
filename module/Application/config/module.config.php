@@ -10,15 +10,9 @@ use Application\Controller\Factory\LeitoControllerFactory;
 use Application\Controller\Factory\PacienteControllerFactory;
 use Application\Controller\LeitoController;
 use Application\Controller\PacienteController;
-use Application\Form\EnderecoFieldset;
-use Application\Form\Factory\EnderecoFieldsetFactory;
-use Application\Form\Factory\LeitoFormFactory;
-use Application\Form\LeitoForm;
-use Application\Form\PessoaForm;
-use Application\Form\ResponsavelFieldset;
+use Application\View\ViewRouteMatchFactory;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
-use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     'router' => [
@@ -116,61 +110,14 @@ return [
             AuthController::class => AuthControllerFactory::class,
         ],
     ],
-    'doctrine' => [
-        'authenticationadapter' => [
-            'orm_default' => [
-                'object_manager' => 'doctrine.entitymanager.orm_default',
-                'identity_class' => \Application\Entity\Usuario::class,
-                'identity_property' => 'email',
-                'credential_property' => 'password',
-                'credential_callable' => function (\Application\Entity\Usuario $user, $passwordGiven) {
-                    return $user->verifyPassword($passwordGiven);
-                },
-            ],
+    'view_helpers' => [
+        'aliases' => [
+            "routeMatch" => View\ViewRouteMatch::class
         ],
-        'fixtures' => [
-            'Application' => __DIR__ . '/../src/DataFixtures',
-        ],
-    ],
-    'laminas-cli' => [
-        'commands' => [
-            'app:fixtures:load' => Command\LoadFixturesCommand::class,
-            'app:mqtt:listen' => Command\ListenMqttCommand::class,
-        ],
-    ],
-    'service_manager' => [
         'factories' => [
-            Command\LoadFixturesCommand::class => Command\Factory\LoadFixturesCommandFactory::class,
-            Command\ListenMqttCommand::class => Command\Factory\ListenMqttCommandFactory::class,
-            \Laminas\Authentication\AuthenticationService::class => function (\Psr\Container\ContainerInterface $container) {
-                $config = $container->get('config');
-                $adapterConfig = $config['doctrine']['authenticationadapter']['orm_default'] ?? [];
+            View\ViewRouteMatch::class => ViewRouteMatchFactory::class
 
-                $entityManager = $container->get($adapterConfig['object_manager'] ?? 'doctrine.entitymanager.orm_default');
-
-                $options = new \DoctrineModule\Options\Authentication($adapterConfig);
-                $options->setObjectManager($entityManager); // Garante que o EM está setado
-
-                $adapter = new \DoctrineModule\Authentication\Adapter\ObjectRepository($options);
-
-                return new \Laminas\Authentication\AuthenticationService(null, $adapter);
-            },
         ],
-
-        'form_elements' => [
-            'factories' => [
-                PessoaForm::class => InvokableFactory::class,
-                LeitoForm::class => LeitoFormFactory::class,
-                EnderecoFieldset::class => EnderecoFieldsetFactory::class,
-                ResponsavelFieldset::class => InvokableFactory::class,
-            ],
-        ],
-    ],
-    'mqtt' => [
-        'server'    => 'localhost',
-        'port'      => 1883,
-        'topic'     => 'hospital/leitos/pacientes',
-        'client_id' => 'laminas_listener_' . bin2hex(random_bytes(5)),
     ],
     'view_manager' => [
         'display_not_found_reason' => true,
