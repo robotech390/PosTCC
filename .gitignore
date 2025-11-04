@@ -7,3 +7,4 @@ data/cache/*
 !data/cache/.gitkeep
 phpunit.xml
 data/database.db
+/data/DoctrineORMModule/Proxy/
