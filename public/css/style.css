@@ -1,17 +1,70 @@
 :root {
-    --brand-color: #013755;
+    --bs-primary: #8B0000;
+    --bs-primary-rgb: 139, 0, 0;
+
+
+     --bs-secondary: #6c757d;
+     --bs-secondary-rgb: 108, 117, 125;
 }
 
 .navbar {
-    background-color: var(--brand-color);
+    background-color: var(--bs-primary) !important;
 }
+
+.navbar-dark .navbar-brand,
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+    color: #fff;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #fff;
+}
+
+.navbar-dark .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+.navbar-dark .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+
+a { color: var(--bs-primary); }
 
 .btn-primary {
-    background-color: var(--brand-color);
-    border-color: var(--brand-color);
+    color: #fff; /* Texto branco */
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
 }
 
-/* allows bootstrap to style Laminas Navigation generated menu items within the navbar */
-.navbar li.active a {
-    color: var(--bs-navbar-active-color);
+.btn-primary:hover {
+    color: #fff;
+    background-color: #700000;
+    border-color: #600000;
+}
+
+.btn-check:focus + .btn-primary, .btn-primary:focus {
+    color: #fff;
+    background-color: #700000;
+    border-color: #600000;
+    box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.5);
+}
+
+.btn-check:checked + .btn-primary, .btn-check:active + .btn-primary, .btn-primary:active, .btn-primary.active, .show > .btn-primary.dropdown-toggle {
+    color: #fff;
+    background-color: #600000;
+    border-color: #500000;
+}
+
+.btn-outline-danger {
+    color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+.btn-outline-danger:hover {
+    color: #fff;
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
 }

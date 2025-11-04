@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Application;
 
+use Application\Controller\AuthController;
+use Application\Controller\Factory\AuthControllerFactory;
 use Application\Controller\Factory\LeitoControllerFactory;
 use Application\Controller\Factory\PacienteControllerFactory;
 use Application\Controller\LeitoController;
+use Application\Controller\PacienteController;
 use Application\Form\EnderecoFieldset;
 use Application\Form\Factory\EnderecoFieldsetFactory;
 use Application\Form\Factory\LeitoFormFactory;
@@ -16,7 +19,6 @@ use Application\Form\ResponsavelFieldset;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
-use Application\Command;
 
 return [
     'router' => [
@@ -26,8 +28,18 @@ return [
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
-                        'controller' => Controller\IndexController::class,
-                        'action'     => 'index',
+                        'controller' => Controller\AuthController::class,
+                        'action'     => 'login',
+                    ],
+                ],
+            ],
+            'logout' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/logout',
+                    'defaults' => [
+                        'controller' => Controller\AuthController::class,
+                        'action'     => 'logout',
                     ],
                 ],
             ],
@@ -99,12 +111,23 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\IndexController::class => InvokableFactory::class,
-            Controller\PacienteController::class => PacienteControllerFactory::class,
+            PacienteController::class => PacienteControllerFactory::class,
             LeitoController::class => LeitoControllerFactory::class,
+            AuthController::class => AuthControllerFactory::class,
         ],
     ],
     'doctrine' => [
+        'authenticationadapter' => [
+            'orm_default' => [
+                'object_manager' => 'doctrine.entitymanager.orm_default',
+                'identity_class' => \Application\Entity\Usuario::class,
+                'identity_property' => 'email',
+                'credential_property' => 'password',
+                'credential_callable' => function (\Application\Entity\Usuario $user, $passwordGiven) {
+                    return $user->verifyPassword($passwordGiven);
+                },
+            ],
+        ],
         'fixtures' => [
             'Application' => __DIR__ . '/../src/DataFixtures',
         ],
@@ -119,6 +142,19 @@ return [
         'factories' => [
             Command\LoadFixturesCommand::class => Command\Factory\LoadFixturesCommandFactory::class,
             Command\ListenMqttCommand::class => Command\Factory\ListenMqttCommandFactory::class,
+            \Laminas\Authentication\AuthenticationService::class => function (\Psr\Container\ContainerInterface $container) {
+                $config = $container->get('config');
+                $adapterConfig = $config['doctrine']['authenticationadapter']['orm_default'] ?? [];
+
+                $entityManager = $container->get($adapterConfig['object_manager'] ?? 'doctrine.entitymanager.orm_default');
+
+                $options = new \DoctrineModule\Options\Authentication($adapterConfig);
+                $options->setObjectManager($entityManager); // Garante que o EM está setado
+
+                $adapter = new \DoctrineModule\Authentication\Adapter\ObjectRepository($options);
+
+                return new \Laminas\Authentication\AuthenticationService(null, $adapter);
+            },
         ],
 
         'form_elements' => [
