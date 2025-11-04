@@ -166,13 +166,13 @@ class PacienteController extends AbstractActionController
         $id = (int) $this->params()->fromRoute('id', 0);
         if ($id === 0) {
             $this->flashMessenger()->addErrorMessage('ID do paciente inválido.');
-            return $this->redirect()->toRoute('pacientes');
+            return $this->redirect()->toRoute('paciente');
         }
 
         $paciente = $this->entityManager->find(Paciente::class, $id);
         if (!$paciente) {
             $this->flashMessenger()->addErrorMessage('Paciente não encontrado.');
-            return $this->redirect()->toRoute('pacientes');
+            return $this->redirect()->toRoute('paciente');
         }
 
         $form = new PessoaForm($this->entityManager);

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'Laminas\Mvc',
     'Laminas\Cache',
     'Laminas\Paginator',
     'Laminas\Mvc\Plugin\FilePrg',

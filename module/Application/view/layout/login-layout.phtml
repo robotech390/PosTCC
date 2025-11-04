@@ -1,0 +1,29 @@
+<?= $this->doctype() ?>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <?= $this->headTitle('Login do Sistema')->setSeparator(' - ')->setAutoEscape(false) ?>
+    <?= $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        html, body { height: 100%; }
+        body { display: flex; align-items: center; justify-content: center; background-color: #f5f5f5; }
+        .form-signin { width: 100%; max-width: 400px; padding: 15px; margin: auto; }
+    </style>
+</head>
+<body class="text-center">
+<main class="form-signin">
+    <?= $this->content ?>
+    <?php
+    $flash = $this->flashMessenger();
+    if ($flash->hasErrorMessages()) {
+        echo '<div class="alert alert-danger mt-3">';
+        foreach($flash->getErrorMessages() as $msg) { echo $this->escapeHtml($msg) . '<br>'; }
+        echo '</div>';
+        $flash->clearErrorMessages();
+    }
+    ?>
+</main>
+</body>
+</html>

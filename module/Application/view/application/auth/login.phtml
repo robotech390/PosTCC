@@ -1,0 +1,21 @@
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('home'));
+$form->prepare();
+?>
+    <h1 class="h3 mb-3 fw-normal">Login do Sistema</h1>
+
+<?= $this->form()->openTag($form) ?>
+    <div class="form-floating mb-3">
+        <?= $this->formElement($form->get('email')) ?>
+        <?= $this->formLabel($form->get('email')) ?>
+        <?= $this->formElementErrors($form->get('email'), ['class' => 'invalid-feedback']) ?>
+    </div>
+    <div class="form-floating mb-3">
+        <?= $this->formElement($form->get('password')) ?>
+        <?= $this->formLabel($form->get('password')) ?>
+        <?= $this->formElementErrors($form->get('password'), ['class' => 'invalid-feedback']) ?>
+    </div>
+
+<?= $this->formElement($form->get('submit')) ?>
+<?= $this->form()->closeTag() ?>
