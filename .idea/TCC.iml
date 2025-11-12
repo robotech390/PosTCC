@@ -28,18 +28,12 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/felixfbecker/advanced-json-rpc" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/felixfbecker/language-server-protocol" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/fidry/cpu-core-counter" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/fig/http-message-util" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-authentication" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-cache" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-cache-storage-adapter-filesystem" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-cache-storage-adapter-memory" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-component-installer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-config" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-db" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-developer-tools" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-development-mode" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-di" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-diactoros" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-escaper" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-eventmanager" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-filter" />
@@ -53,19 +47,15 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-modulemanager" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-mvc" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-mvc-i18n" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-mvc-middleware" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-mvc-plugin-fileprg" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-mvc-plugin-flashmessenger" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-mvc-plugin-identity" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-mvc-plugin-prg" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-paginator" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-psr7bridge" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-router" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-servicemanager" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-session" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-skeleton-installer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-stdlib" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-stratigility" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-test" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-translator" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-uri" />
@@ -91,10 +81,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/cache" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/clock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/container" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-factory" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-message" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-server-handler" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-server-middleware" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/simple-cache" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/cli-parser" />
@@ -132,16 +119,10 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/vimeo/psalm" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webimpress/safe-writer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/twbs/bootstrap" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/data-fixtures" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-cli" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/event-dispatcher" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher-contracts" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/myclabs/php-enum" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/php-mqtt/client" />
       <excludeFolder url="file://$MODULE_DIR$/public/vendor/fontawesome/css" />
       <excludeFolder url="file://$MODULE_DIR$/public/vendor/fontawesome/webfonts" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-i18n-resources" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -10,17 +10,24 @@ use Application\Controller\Factory\LeitoControllerFactory;
 use Application\Controller\Factory\PacienteControllerFactory;
 use Application\Controller\LeitoController;
 use Application\Controller\PacienteController;
+use Application\Plugin\Login\AuthAdapter;
+use Application\Plugin\Login\AuthAdapterFactory;
+use Application\Plugin\Login\AuthenticationServiceFactory;
+use Application\Plugin\Login\AuthManager;
+use Application\Plugin\Login\AuthManagerFactory;
 use Application\View\ViewRouteMatchFactory;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
+use Laminas\Authentication\AuthenticationService;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
 
 return [
     'router' => [
         'routes' => [
-            'home' => [
+            'login' => [
                 'type'    => Literal::class,
                 'options' => [
-                    'route'    => '/',
+                    'route'    => '/login',
                     'defaults' => [
                         'controller' => Controller\AuthController::class,
                         'action'     => 'login',
@@ -34,6 +41,16 @@ return [
                     'defaults' => [
                         'controller' => Controller\AuthController::class,
                         'action'     => 'logout',
+                    ],
+                ],
+            ],
+            'home' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/',
+                    'defaults' => [
+                        'controller' => Controller\AuthController::class,
+                        'action'     => 'login',
                     ],
                 ],
             ],
@@ -110,6 +127,13 @@ return [
             AuthController::class => AuthControllerFactory::class,
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+            AuthenticationService::class => AuthenticationServiceFactory::class,
+            AuthManager::class => AuthManagerFactory::class,
+            AuthAdapter::class => AuthAdapterFactory::class
+        ],
+    ],
     'view_helpers' => [
         'aliases' => [
             "routeMatch" => View\ViewRouteMatch::class
@@ -133,6 +157,22 @@ return [
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',
+        ],
+    ],
+    'doctrine' => [
+        'driver' => [
+            __NAMESPACE__ . '_driver' => [
+                'class' => AttributeDriver::class,
+                'cache' => 'array',
+                'paths' => [
+                    __DIR__ . '/../src/Entity',
+                ]
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    __NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver',
+                ]
+            ],
         ],
     ],
 ];

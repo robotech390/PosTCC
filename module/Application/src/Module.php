@@ -4,52 +4,54 @@ declare(strict_types=1);
 
 namespace Application;
 
-use Laminas\Authentication\AuthenticationService;
-use Laminas\ModuleManager\ModuleManager;
+use Application\Plugin\Login\AuthManager;
+use Exception;
+use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\MvcEvent;
 
 class Module
 {
-
     public function getConfig(): array
     {
-        /** @var array $config */
-        $config = include __DIR__ . '/../config/module.config.php';
-        return $config;
+        return include __DIR__ . '/../config/module.config.php';
     }
 
-    public function onBootstrap(MvcEvent $e)
+    public function onBootstrap(MvcEvent $event): void
     {
-        $app = $e->getApplication();
-        $eventManager = $app->getEventManager();
-        $serviceManager = $app->getServiceManager();
+        $application = $event->getApplication();
+        $eventManager = $application->getEventManager();
+        $sharedEventManager = $eventManager->getSharedManager();
 
-        $eventManager->attach(MvcEvent::EVENT_ROUTE, function (MvcEvent $e) use ($serviceManager) {
+        $sharedEventManager->attach(
+            AbstractActionController::class,
+            MvcEvent::EVENT_DISPATCH,
+            [$this, 'onDispatch'],
+            100
+        );
 
-            $authService = $serviceManager->get(AuthenticationService::class);
-            $routeName = $e->getRouteMatch()->getMatchedRouteName();
-
-            $whitelist = ['home', 'logout'];
-
-            if ($authService->hasIdentity()) {
-                if ($routeName == 'home') {
-                    return $this->redirectToRoute($e, 'paciente');
-                }
-            } else {
-                if (!in_array($routeName, $whitelist)) {
-                    return $this->redirectToRoute($e, 'home');
-                }
-            }
-        }, -100);
+//        $sessionManager = $application->getServiceManager()->get('Laminas\Session\SessionManager');
+//        $this->forgetInvalidSession($sessionManager);
     }
 
-    private function redirectToRoute(MvcEvent $e, string $routeName)
+    protected function forgetInvalidSession($sessionManager): void
     {
-        $url = $e->getRouter()->assemble([], ['name' => $routeName]);
-        $response = $e->getResponse();
-        $response->getHeaders()->addHeaderLine('Location', $url);
-        $response->setStatusCode(302);
-        $response->sendHeaders();
-        return $response;
+        try {
+            $sessionManager->start();
+            return;
+        } catch (Exception $e) {
+        }
+
+        session_unset();
+    }
+
+    public function onDispatch(MvcEvent $event)
+    {
+        $authManager = $event->getApplication()->getServiceManager()->get(AuthManager::class);
+
+
+        if (! $authManager->hasIdentity() && $event->getRouteMatch()->getMatchedRouteName() !== 'login') {
+            return $event->getTarget()->redirect()->toUrl('/login');
+        }
+        return $event;
     }
 }

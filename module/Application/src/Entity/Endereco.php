@@ -4,44 +4,30 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="endereco")
- */
+#[ORM\Table(name: 'endereco')]
+#[ORM\Entity]
 class Endereco
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $rua;
 
-    /**
-     * @ORM\Column(type="string", length=10)
-     */
+    #[ORM\Column(type: 'string', length: 10)]
     private string $numero;
 
-    /**
-     * @ORM\Column(type="string", length=9)
-     */
+    #[ORM\Column(type: 'string', length: 9)]
     private string $cep;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\Cidade")
-     * @ORM\JoinColumn(name="cidade_id", referencedColumnName="id", nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Cidade::class)]
+    #[ORM\JoinColumn(name: 'cidade_id', referencedColumnName: 'id', nullable: false)]
     private Cidade $cidade;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\Estado")
-     * @ORM\JoinColumn(name="estado_id", referencedColumnName="id", nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Estado::class)]
+    #[ORM\JoinColumn(name: 'estado_id', referencedColumnName: 'id', nullable: false)]
     private Estado $estado;
 
     // Getters and Setters
