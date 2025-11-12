@@ -11,14 +11,6 @@ use Laminas\Mvc\MvcEvent;
 class Module
 {
 
-    public function init(ModuleManager $moduleManager)
-    {
-        $moduleManager->getEventManager()->attach('loadModule', function ($e) {
-            $moduleName = $e->getModuleName();
-            error_log("Module loaded: " . $moduleName);
-        });
-    }
-
     public function getConfig(): array
     {
         /** @var array $config */

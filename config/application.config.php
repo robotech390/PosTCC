@@ -5,13 +5,22 @@
  * @see https://docs.zendframework.com/tutorials/advanced-config/#environment-specific-system-configuration
  * @see https://docs.zendframework.com/tutorials/advanced-config/#environment-specific-application-configuration
  */
+
+use Laminas\Mvc\Service\ModuleManagerFactory;
+
 return [
     'modules' => require __DIR__ . '/modules.config.php',
+
+    'service_manager' => [
+        'factories' => [
+            'ModuleManager' => ModuleManagerFactory::class,
+        ],
+    ],
 
     'module_listener_options' => [
         'use_laminas_loader' => false,
         'config_glob_paths' => [
-            realpath(__DIR__) . '/autoload/{{,*.}global,{,*.}local}.php',
+            realpath(__DIR__) . '/autoload/{,*.}{global,local}.php',
         ],
         'config_cache_enabled' => false,
         'config_cache_key' => 'application.config.cache',
