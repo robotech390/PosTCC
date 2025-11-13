@@ -2,51 +2,40 @@
 
 namespace Application\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="paciente")
- */
+#[ORM\Table(name: 'paciente')]
+#[ORM\Entity]
 class Paciente
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Application\Entity\Pessoa", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="pessoa_id", referencedColumnName="id", nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: Pessoa::class, cascade: ["persist", "remove"])]
+    #[ORM\JoinColumn(name: 'pessoa_id', referencedColumnName: 'id', nullable: false)]
     private Pessoa $pessoa;
 
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\Endereco")
-     * @ORM\JoinColumn(name="endereco_id", referencedColumnName="id", nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Endereco::class)]
+    #[ORM\JoinColumn(name: 'endereco_id', referencedColumnName: 'id', nullable: false)]
     private Endereco $endereco;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Pessoa", cascade={"persist"})
-     * @ORM\JoinTable(name="paciente_responsaveis",
-     * joinColumns={@ORM\JoinColumn(name="paciente_id", referencedColumnName="id")}, inverseJoinColumns={@ORM\JoinColumn(name="responsavel_pessoa_id", referencedColumnName="id")})
-     */
+    #[ORM\ManyToMany(targetEntity: Pessoa::class, cascade: ["persist"])]
+    #[ORM\JoinTable(
+        name: 'paciente_responsive',
+        joinColumns: [new ORM\JoinColumn(name: 'paciente_id', referencedColumnName: 'id')],
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'responsavel_pessoa_id', referencedColumnName: 'id')]
+    )]
     private Collection $responsaveis;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private \DateTime $nascimento;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private DateTime $nascimento;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Leito", mappedBy="paciente")
-     */
+    #[ORM\OneToOne(mappedBy: 'paciente', targetEntity: Leito::class)]
     private ?Leito $leito = null;
 
     public function __construct()
@@ -105,5 +94,4 @@ class Paciente
     {
         $this->responsaveis->removeElement($pessoa);
     }
-
 }

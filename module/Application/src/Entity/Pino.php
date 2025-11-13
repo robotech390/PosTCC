@@ -1,59 +1,55 @@
 <?php
-// Arquivo: module/Application/src/Entity/Pino.php
+
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="pino", uniqueConstraints={
- * @ORM\UniqueConstraint(name="esp32_num_pino_idx", columns={"esp32_id", "numero_pino"})
- * })
- */
+#[ORM\Table(name: 'pino')]
+#[ORM\Entity]
 class Pino
 {
-    /**
-     * @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer")
-     */
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="ESP32", inversedBy="pinos")
-     * @ORM\JoinColumn(name="esp32_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     */
+    #[ORM\ManyToOne(targetEntity: ESP32::class, inversedBy: 'pinos')]
+    #[ORM\JoinColumn(name: 'esp32_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private ESP32 $esp32;
 
-    /**
-     * @ORM\Column(type="integer", name="numero_pino")
-     */
+    #[ORM\Column(name: 'numero_pino', type: 'integer')]
     private int $numeroPino;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Leito", mappedBy="pino")
-     */
+    #[ORM\OneToOne(mappedBy: 'pino', targetEntity: Leito::class)]
     private ?Leito $leito = null;
 
-    public function getId(): int {
+    public function getId(): int
+    {
         return $this->id;
     }
 
-    public function getEsp32(): ESP32 {
+    public function getEsp32(): ESP32
+    {
         return $this->esp32;
     }
 
-    public function setEsp32(ESP32 $esp32): void {
+    public function setEsp32(ESP32 $esp32): void
+    {
         $this->esp32 = $esp32;
     }
 
-    public function getNumeroPino(): int {
+    public function getNumeroPino(): int
+    {
         return $this->numeroPino;
     }
 
-    public function setNumeroPino(int $numeroPino): void {
+    public function setNumeroPino(int $numeroPino): void
+    {
         $this->numeroPino = $numeroPino;
     }
 
-    public function getLeito(): ?Leito {
+    public function getLeito(): ?Leito
+    {
         return $this->leito;
     }
 }

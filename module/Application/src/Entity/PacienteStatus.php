@@ -1,57 +1,44 @@
 <?php
 
-// Arquivo: module/Application/src/Entity/PacienteStatus.php
 namespace Application\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="paciente_status", indexes={@ORM\Index(name="idx_paciente_data", columns={"paciente_id", "data_registro"})})
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Table(name: 'paciente_status')]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class PacienteStatus
 {
-    /**
-     * @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer")
-     */
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Paciente")
-     * @ORM\JoinColumn(name="paciente_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     */
+    #[ORM\ManyToOne(targetEntity: Paciente::class)]
+    #[ORM\JoinColumn(name: 'paciente_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private Paciente $paciente;
 
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
+    #[ORM\Column(type: 'string', length: 50)]
     private string $evento;
 
-    /**
-     * @ORM\Column(type="datetime", name="data_registro")
-     */
-    private \DateTime $dataRegistro;
+    #[ORM\Column(name: 'data_registro', type: 'datetime')]
+    private DateTime $dataRegistro;
 
-    /**
-     * @ORM\Column(type="integer", name="timestamp_dispositivo", nullable=true)
-     */
+    #[ORM\Column(name: 'timestamp_dispositivo', type: 'integer', nullable: true)]
     private ?int $timestampDispositivo = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Pino")
-     * @ORM\JoinColumn(name="pino_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
-     */
+    #[ORM\ManyToOne(targetEntity: Pino::class)]
+    #[ORM\JoinColumn(name: 'pino_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?Pino $pinoOrigem = null;
 
-    /** @ORM\PrePersist */
+    #[ORM\PrePersist]
     public function setDataRegistroOnPrePersist(): void
     {
         if (! isset($this->dataRegistro)) {
-            $this->dataRegistro = new \DateTime();
+            $this->dataRegistro = new DateTime();
         }
     }
-
 
     public function getId(): int
     {
@@ -73,12 +60,13 @@ class PacienteStatus
     {
         $this->evento = $evento;
     }
-    public function getDataRegistro(): \DateTime
+    public function getDataRegistro(): DateTime
     {
         return $this->dataRegistro;
     }
 
-    public function setDataRegistro(\DateTime $dataRegistro): void {
+    public function setDataRegistro(DateTime $dataRegistro): void
+    {
         $this->dataRegistro = $dataRegistro;
     }
 

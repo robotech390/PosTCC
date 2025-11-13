@@ -1,26 +1,25 @@
 <?php
 namespace Application\Controller;
 
-use Laminas\Authentication\AuthenticationService;
+use Application\Plugin\Login\AuthManager;
+use Doctrine\ORM\EntityManager;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Application\Form\LoginForm;
 
 class AuthController extends AbstractActionController
 {
-    private AuthenticationService $authService;
+    private EntityManager $entityManager;
+    private AuthManager $authManager;
 
-    public function __construct(AuthenticationService $authService)
+    public function __construct($entityManager, $authManager)
     {
-        $this->authService = $authService;
+        $this->entityManager = $entityManager;
+        $this->authManager = $authManager;
     }
 
     public function loginAction()
     {
-        if ($this->authService->hasIdentity()) {
-            return $this->redirect()->toRoute('paciente');
-        }
-
         $form = new LoginForm();
         $request = $this->getRequest();
 
@@ -30,11 +29,7 @@ class AuthController extends AbstractActionController
             if ($form->isValid()) {
                 $data = $form->getData();
 
-                $adapter = $this->authService->getAdapter();
-                $adapter->setIdentity($data['email']);
-                $adapter->setCredential($data['password']);
-
-                $result = $this->authService->authenticate();
+                $result = $this->authManager->login($data['email'], $data['password']);
 
                 if ($result->isValid()) {
                     return $this->redirect()->toRoute('paciente');
@@ -50,7 +45,7 @@ class AuthController extends AbstractActionController
 
     public function logoutAction()
     {
-        $this->authService->clearIdentity();
+        $this->authManager->clearIdentity();
         $this->flashMessenger()->addSuccessMessage('Você foi desconectado com sucesso.');
 
         return $this->redirect()->toRoute('home');

@@ -2,49 +2,34 @@
 
 namespace Application\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="pessoa")
- */
+#[ORM\Table(name: 'pessoa')]
+#[ORM\Entity]
 class Pessoa
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $nome;
 
-    /**
-     * @ORM\Column(type="string", length=14, unique=true)
-     */
+    #[ORM\Column(type: 'string', length: 14, unique: true)]
     private string $cpf;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
-    private \DateTime $nascimento;
+    #[ORM\Column(type: 'date', nullable: true)]
+    private DateTime $nascimento;
 
-    /**
-     * @ORM\Column(type="string", length=20, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private ?string $rg;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $telefone;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $foto = null;
 
     public function getId(): int
@@ -72,12 +57,12 @@ class Pessoa
         $this->cpf = $cpf;
     }
 
-    public function getNascimento(): \DateTime
+    public function getNascimento(): DateTime
     {
         return $this->nascimento;
     }
 
-    public function setNascimento(\DateTime $nascimento): void
+    public function setNascimento(DateTime $nascimento): void
     {
         $this->nascimento = $nascimento;
     }

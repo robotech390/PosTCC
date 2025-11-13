@@ -1,44 +1,30 @@
 <?php
-// Arquivo: module/Application/src/Entity/Leito.php
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="leito")
- */
+#[ORM\Table(name: 'leito')]
+#[ORM\Entity]
 class Leito
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
-    /**
-     * Número/Identificador do leito (ex: "101-A").
-     * @ORM\Column(type="string", length=50)
-     */
+
+    #[ORM\Column(type: 'string', length: 50)]
     private string $numero;
 
-    /**
-     * Localização do leito (ex: "UTI Coronariana", "Enfermaria 3").
-     * @ORM\Column(type="string", length=100)
-     */
+    #[ORM\Column(type: 'string', length: 100)]
     private string $setor;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Pino", inversedBy="leito")
-     * @ORM\JoinColumn(name="pino_id", referencedColumnName="id", nullable=false, unique=true, onDelete="RESTRICT")
-     */
+    #[ORM\OneToOne(inversedBy: 'leito', targetEntity: Pino::class)]
+    #[ORM\JoinColumn(name: 'pino_id', referencedColumnName: 'id', unique: true, nullable: false, onDelete: 'RESTRICT')]
     private Pino $pino;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Paciente", inversedBy="leito")
-     * @ORM\JoinColumn(name="paciente_id", referencedColumnName="id", nullable=true, unique=true, onDelete="SET NULL")
-     */
+    #[ORM\OneToOne(targetEntity: Paciente::class, inversedBy: 'leito')]
+    #[ORM\JoinColumn(name: 'paciente_id', referencedColumnName: 'id', nullable: true, unique: true, onDelete: 'SET NULL')]
     private ?Paciente $paciente = null;
 
 

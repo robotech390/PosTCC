@@ -4,28 +4,20 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="cidade")
- */
+#[ORM\Table(name: 'cidade')]
+#[ORM\Entity]
 class Cidade
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
+    #[ORM\Column(name: 'nome', type: 'text', length: 100, nullable: false)]
     private string $nome;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\Estado")
-     * @ORM\JoinColumn(name="estado_id", referencedColumnName="id", nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Estado::class)]
+    #[ORM\JoinColumn(name: 'estado_id', referencedColumnName: 'id', nullable: false)]
     private Estado $estado;
 
     public function getId(): int

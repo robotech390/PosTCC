@@ -9,7 +9,7 @@ use Laminas\View\Renderer\RendererInterface as Renderer;
 class ViewRouteMatch implements HelperInterface
 {
     protected ?Renderer $view;
-    private RouteMatch $routeMatch;
+    private ?RouteMatch $routeMatch = null;
 
     public function setView(Renderer $view): HelperInterface|static
     {
@@ -22,12 +22,12 @@ class ViewRouteMatch implements HelperInterface
         return $this->view;
     }
 
-    public function __construct(RouteMatch $routeMatch)
+    public function __construct(?RouteMatch $routeMatch = null)
     {
         $this->routeMatch = $routeMatch;
     }
 
-    public function __invoke(): RouteMatch
+    public function __invoke(): ?RouteMatch
     {
         return $this->routeMatch;
     }
