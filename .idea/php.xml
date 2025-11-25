@@ -15,8 +15,6 @@
   <component name="PhpCodeSniffer">
     <phpcs_settings>
       <PhpCSConfiguration tool_path="$PROJECT_DIR$/vendor/bin/phpcs" />
-      <PhpCSConfiguration beautifier_path="$PROJECT_DIR$/vendor/bin/phpcbf" tool_path="$PROJECT_DIR$/vendor/bin/phpcs" />
-      <PhpCSConfiguration asDefaultInterpreter="true" deletedFromTheList="true" beautifier_path="$PROJECT_DIR$/vendor/bin/phpcbf" tool_path="$PROJECT_DIR$/vendor/bin/phpcs" />
     </phpcs_settings>
   </component>
   <component name="PhpIncludePathManager">
@@ -138,6 +136,20 @@
       <path value="$PROJECT_DIR$/vendor/symfony/string" />
       <path value="$PROJECT_DIR$/vendor/symfony/var-dumper" />
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-i18n-resources" />
+      <path value="$PROJECT_DIR$/vendor/php-mqtt/client" />
+      <path value="$PROJECT_DIR$/vendor/psr/event-dispatcher" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-server-handler" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-server-middleware" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/vendor/twbs/bootstrap" />
+      <path value="$PROJECT_DIR$/vendor/laminas/laminas-stratigility" />
+      <path value="$PROJECT_DIR$/vendor/myclabs/php-enum" />
+      <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher" />
+      <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/cache" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php73" />
+      <path value="$PROJECT_DIR$/vendor/symfony/cache-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/var-exporter" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3">

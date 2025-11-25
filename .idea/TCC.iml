@@ -123,6 +123,10 @@
       <excludeFolder url="file://$MODULE_DIR$/public/vendor/fontawesome/css" />
       <excludeFolder url="file://$MODULE_DIR$/public/vendor/fontawesome/webfonts" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-i18n-resources" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/cache-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php73" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/var-exporter" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

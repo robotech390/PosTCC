@@ -5,7 +5,7 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'pino')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: 'Application\Repository\PinoRepository')]
 class Pino
 {
     #[ORM\Column(name: 'id', type: 'integer', nullable: false)]

@@ -49,5 +49,4 @@ class Usuario
         return $this->password;
     }
 
-
 }

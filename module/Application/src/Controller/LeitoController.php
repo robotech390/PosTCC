@@ -170,7 +170,7 @@ class LeitoController extends AbstractActionController
 
         if ($esp32Id > 0) {
             $pinoRepo = $this->entityManager->getRepository(Pino::class);
-            $pinos = $pinoRepo->findBy(['esp32' => $esp32Id], ['numeroPino' => 'ASC']);
+            $pinos = $pinoRepo->findAvailablePinos($esp32Id);
 
             foreach ($pinos as $pino) {
                 $pinosArray[] = [

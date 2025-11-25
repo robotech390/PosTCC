@@ -21,7 +21,9 @@
                 'href' => $this->basePath() . '/img/favicon.ico'
             ])
             ->prependStylesheet($this->basePath('css/style.css'))
-            ->prependStylesheet($this->basePath('css/bootstrap.min.css')) ?>
+            ->prependStylesheet($this->basePath('css/bootstrap.min.css'))
+        ?>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
         <!-- Scripts -->
         <?= $this->headScript() ?>
     </head>
@@ -32,7 +34,10 @@
         </div>
         <nav class="navbar navbar-expand-md navbar-dark mb-4" role="navigation">
             <div class="container">
-                <a class="navbar-brand" href="<?= $this->url('paciente') ?>"> <img src="<?= $this->basePath('img/laminas-logo.svg') ?>" alt="Laminas" style="filter: brightness(0) invert(1);"> <span class="navbar-text text-light">Seu Sistema</span> </a>
+                <a class="navbar-brand d-flex align-items-center gap-2" href="<?= $this->url('paciente') ?>">
+                    <img src="<?= $this->basePath('img/laminas-logo.svg') ?>" alt="Laminas" style="filter: brightness(0) invert(1); height:28px;">
+                    <span class="navbar-text text-light">Seu Sistema</span>
+                </a>
 
                 <button
                         class="navbar-toggler"
@@ -46,38 +51,57 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="appNavbarContent"
+                <div class="collapse navbar-collapse" id="appNavbarContent">
                     <?php
                     $routeMatch = $this->routeMatch();
                     $currentRoute = $routeMatch ? $routeMatch->getMatchedRouteName() : '';
-                    ?>
-                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                        <li class="nav-item">
-                            <a class="nav-link <?= ($currentRoute === 'paciente') ? 'active' : '' ?>"
-                               href="<?= $this->url('paciente') ?>">
-                                Pacientes
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= ($currentRoute === 'leitos') ? 'active' : '' ?>"
-                               href="<?= $this->url('leitos') ?>">
-                                Leitos
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= ($currentRoute === 'relatorios') ? 'active' : '' ?>"
-                               href="#"> Relatórios
-                            </a>
-                        </li>
-                    </ul>
 
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light" href="<?= $this->url('logout') ?>">
-                                <i class="fas fa-sign-out-alt"></i> Sair
-                            </a>
-                        </li>
-                    </ul>
+                    $isActive = function(string $route) use ($currentRoute) {
+                        return $currentRoute === $route;
+                    };
+
+                    $btnActiveClass = 'btn btn-light text-dark';
+                    $btnInactiveClass = 'btn btn-outline-light';
+                    ?>
+
+                    <div class="d-flex flex-row align-items-center flex-wrap gap-2 me-auto">
+                        <a
+                                class="<?= $isActive('paciente') ? $btnActiveClass : $btnInactiveClass ?>"
+                                href="<?= $this->url('paciente') ?>"
+                                role="button"
+                            <?= $isActive('paciente') ? 'aria-current="page"' : '' ?>
+                        >
+                            <i class="fa-solid fa-users"></i>
+                            Pacientes
+                        </a>
+
+                        <a
+                                class="<?= $isActive('leitos') ? $btnActiveClass : $btnInactiveClass ?>"
+                                href="<?= $this->url('leitos') ?>"
+                                role="button"
+                            <?= $isActive('leitos') ? 'aria-current="page"' : '' ?>
+                        >
+                            <i class="fa-solid fa-bed"></i>
+                            Leitos
+                        </a>
+
+                        <a
+                                class="<?= $isActive('relatorios') ? $btnActiveClass : $btnInactiveClass ?>"
+                                href="<?= $this->url('relatorios') ?>"
+                                role="button"
+                            <?= $isActive('relatorios') ? 'aria-current="page"' : '' ?>
+                        >
+                            <i class="fa-solid fa-book"></i>
+                            Relatórios
+                        </a>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 ms-auto">
+                        <a class="btn btn-outline-light" href="<?= $this->url('logout') ?>">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span class="visually-hidden">Sair</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -105,7 +129,7 @@
             <footer>
                 <p>
                     &copy; <?= date('Y') ?>
-                    <a href="https://getlaminas.org/">Laminas Project</a> a Series of LF Projects, LLC.
+                    Todos os direitos Reservados
                 </p>
             </footer>
         </div>
