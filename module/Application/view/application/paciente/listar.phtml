@@ -72,11 +72,15 @@ $this->headTitle('Dashboard de Pacientes');
     </div>
 </div>
 
+<audio id="notification-sound" src="/sound/sound.mp3" preload="auto"></audio>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const deleteModalElement = document.getElementById('deleteConfirmModal');
         const confirmDeleteBtn = document.getElementById('btn-confirm-delete');
         const deleteModal = new bootstrap.Modal(deleteModalElement);
+        const notificationSound = document.getElementById('notification-sound');
+        let lastData = null;
 
         document.body.addEventListener('click', function (event) {
             const deleteButton = event.target.closest('.btn-delete-paciente');
@@ -94,5 +98,70 @@ $this->headTitle('Dashboard de Pacientes');
             event.preventDefault();
             window.location.href = this.getAttribute('href');
         });
+
+        function fetchUpdates() {
+            fetch('<?= $this->url('paciente', ['action' => 'verificar-atualizacoes']) ?>')
+                .then(response => response.json())
+                .then(data => {
+                    const dataString = JSON.stringify(data);
+
+                    // Verifica se houve mudanças nos dados
+                    if (lastData && lastData !== dataString) {
+                        notificationSound.play();
+                    }
+
+                    updateDashboard(data);
+                    lastData = dataString;
+                })
+                .catch(error => console.error('Erro ao verificar atualizações:', error));
+        }
+
+        function updateDashboard(pacientes) {
+            const container = document.querySelector('.row');
+            container.innerHTML = '';
+
+            if (pacientes.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            Nenhum paciente cadastrado ainda.
+                        </div>
+                    </div>
+                `;
+            } else {
+                pacientes.forEach(paciente => {
+                    const badgeClass = paciente.status && paciente.status.evento === 'Acordado' ? 'badge-primary' : 'badge-danger';
+                    const statusText = paciente.status ? paciente.status.evento : 'Indefinido';
+                    const dataRegistro = paciente.status ? paciente.status.dataRegistro : 'N/A';
+
+                    const card = `
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="text-center mb-3">
+                                        <img src="/uploads/${paciente.foto || 'default_img.jpeg'}"
+                                             alt="Foto de ${paciente.nome}"
+                                             class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+                                    </div>
+                                    <h5 class="card-title text-center">${paciente.nome}</h5>
+                                    <span class="badge ${badgeClass}">${statusText}</span>
+                                    <p class="text-muted text-center mt-2">Última atualização: ${dataRegistro}</p>
+                                    <ul class="list-unstyled text-muted mt-2 mb-4">
+                                        <li><strong>CPF:</strong> ${paciente.cpf}</li>
+                                        <li><strong>Telefone:</strong> ${paciente.telefone}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            }
+        }
+
+        fetchUpdates();
+
+        setInterval(fetchUpdates, 5000);
+
     });
 </script>

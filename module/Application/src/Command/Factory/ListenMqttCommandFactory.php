@@ -13,7 +13,7 @@ class ListenMqttCommandFactory implements FactoryInterface
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
         $config = $container->get('config');
         $mqttConfig = $config['mqtt'] ?? [
-            'server'    => 'localhost',
+            'server'    => 'broker.emqx.io',
             'port'      => 1883,
             'topic'     => 'hospital/leitos/pacientes',
             'client_id' => 'laminas_listener_' . bin2hex(random_bytes(5)),

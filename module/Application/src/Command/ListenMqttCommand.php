@@ -140,7 +140,7 @@ class ListenMqttCommand extends Command
                 }
 
                 $this->entityManager->persist($statusRecord);
-                $this->entityManager->flush(); // Salva o registro de status
+                $this->entityManager->flush();
                 $this->entityManager->clear();
 
                 $io->success("Histórico Status p/ Paciente [{$paciente->getPessoa()->getNome()}] no Leito [{$leito->getNumero()}]: '{$evento}'.");

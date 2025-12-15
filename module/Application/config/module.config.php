@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Application;
 
+use Application\Command\Factory\ListenMqttCommandFactory;
+use Application\Command\ListenMqttCommand;
 use Application\Controller\AuthController;
 use Application\Controller\Factory\AuthControllerFactory;
 use Application\Controller\Factory\LeitoControllerFactory;
@@ -16,6 +18,7 @@ use Application\Plugin\Login\AuthenticationServiceFactory;
 use Application\Plugin\Login\AuthManager;
 use Application\Plugin\Login\AuthManagerFactory;
 use Application\View\ViewRouteMatchFactory;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Router\Http\Literal;
@@ -145,7 +148,8 @@ return [
         'factories' => [
             AuthenticationService::class => AuthenticationServiceFactory::class,
             AuthManager::class => AuthManagerFactory::class,
-            AuthAdapter::class => AuthAdapterFactory::class
+            AuthAdapter::class => AuthAdapterFactory::class,
+            ListenMqttCommand::class => ListenMqttCommandFactory::class,
         ],
     ],
     'view_helpers' => [

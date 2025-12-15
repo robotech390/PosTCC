@@ -7,6 +7,7 @@ use Application\Entity\Endereco;
 use Application\Entity\Estado;
 use Application\Entity\Leito;
 use Application\Entity\Paciente;
+use Application\Entity\PacienteStatus;
 use Application\Entity\Pessoa;
 use Application\Form\PessoaForm;
 use Doctrine\ORM\EntityManager;
@@ -372,5 +373,34 @@ class PacienteController extends AbstractActionController
         }
 
         return $this->redirect()->toRoute('paciente');
+    }
+
+    public function verificarAtualizacoesAction()
+    {
+        $pacientes = $this->entityManager->getRepository(Paciente::class)->findAll();
+
+        $pacientesArray = [];
+        foreach ($pacientes as $paciente) {
+
+            $status = $this->entityManager->getRepository(PacienteStatus::class)->findOneBy(['paciente' => $paciente], ['dataRegistro' => 'DESC'], 1);
+
+            $pacientesArray[] = [
+                'id' => $paciente->getId(),
+                'nome' => $paciente->getPessoa()->getNome(),
+                'cpf' => $paciente->getPessoa()->getCpf(),
+                'telefone' => $paciente->getPessoa()->getTelefone(),
+                'foto' => $paciente->getPessoa()->getFoto(),
+                'status' => $status ? [
+                    'evento' => $status[0]->getEvento(),
+                    'dataRegistro' => $status[0]->getDataRegistro()->format('d/m/Y H:i:s'),
+                ] : null,
+            ];
+        }
+
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($pacientesArray));
+
+        return $response;
     }
 }
