@@ -6,7 +6,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'paciente_status')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: 'Application\Repository\PacienteStatusRepository')]
 #[ORM\HasLifecycleCallbacks]
 class PacienteStatus
 {

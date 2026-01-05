@@ -68,3 +68,14 @@ a { color: var(--bs-primary); }
     background-color: var(--bs-primary);
     border-color: var(--bs-primary);
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f3f4f6;
+}

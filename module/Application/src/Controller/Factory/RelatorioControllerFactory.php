@@ -1,18 +1,16 @@
 <?php
 
-namespace Application\Form\Factory;
+namespace Application\Controller\Factory;
 
-use Application\Form\EnderecoFieldset;
-use Doctrine\ORM\EntityManager;
+use Application\Controller\RelatorioController;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class EnderecoFieldsetFactory implements FactoryInterface
+class RelatorioControllerFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
-
-        return new EnderecoFieldset($entityManager);
+        return new RelatorioController($entityManager);
     }
 }

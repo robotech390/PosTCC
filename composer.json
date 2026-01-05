@@ -24,6 +24,7 @@
         "laminas/laminas-mvc-i18n": "^1.8",
         "laminas/laminas-mvc-plugins": "^1.2.0",
         "laminas/laminas-session": "^2.24.0",
+        "mpdf/mpdf": "^8.2",
         "php-mqtt/client": "^2.3",
         "symfony/cache": "^5.4"
     },

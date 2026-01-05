@@ -1,0 +1,253 @@
+<?php
+$endereco = $this->paciente->getEndereco();
+?>
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>Histórico</title>
+        <style>
+            body {
+                font-family: DejaVu Sans, sans-serif;
+                margin: 0;
+                padding:  15px;
+            }
+
+            .card {
+                background-color: white;
+                border:  2px solid #e5e7eb;
+                padding: 15px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .photo-cell {
+                width: 200px;
+                vertical-align: top;
+                padding-right: 20px;
+            }
+
+            .profile-photo {
+                width: 180px;
+                height: 180px;
+            }
+
+            .info-cell {
+                vertical-align: top;
+            }
+
+            .info-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .info-table td {
+                padding: 8px 5px;
+                vertical-align: top;
+            }
+
+            .border-bottom {
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .field-label {
+                color: #6b7280;
+                font-size: 11px;
+                margin-bottom: 3px;
+                display: block;
+                font-weight: bold;
+            }
+
+            .field-value {
+                color: #1f2937;
+                font-size: 12px;
+                margin-top: 3px;
+            }
+
+            . header-section {
+                margin-bottom: 12px;
+                padding-bottom: 8px;
+                border-bottom:  2px solid #e5e7eb;
+            }
+
+            .header-title {
+                font-size: 16px;
+                font-weight:  bold;
+                color: #1f2937;
+                margin:  0;
+                padding: 0;
+            }
+
+            .icon-text {
+                color: #2563eb;
+                font-weight: bold;
+                margin-right: 5px;
+            }
+
+            . data-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 5px;
+            }
+
+            . data-table thead tr {
+                background-color: #f9fafb;
+                border-bottom: 2px solid #e5e7eb;
+            }
+
+            .data-table th {
+                text-align: left;
+                padding: 8px 10px;
+                font-size: 12px;
+                font-weight: bold;
+                color: #374151;
+                background-color: #f9fafb;
+            }
+
+            .data-table tbody tr {
+                border-bottom: 1px solid #f3f4f6;
+            }
+
+            .data-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .data-table td {
+                padding: 8px 10px;
+                font-size: 11px;
+                color: #1f2937;
+            }
+
+            .data-table tbody tr: nth-child(even) {
+                background-color: #fafafa;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <table>
+                <tr>
+                    <td class="photo-cell">
+                        <img src="uploads/<?= $this->paciente->getPessoa()->getFoto() ? $this->escapeHtml($this->paciente->getPessoa()->getFoto()) : 'default_img.jpeg' ?>"
+                             alt="Foto"
+                             class="profile-photo" />
+                    </td>
+                    <!-- Coluna dos Dados -->
+                    <td class="info-cell">
+                        <table class="info-table">
+                            <tr>
+                                <td width="50%" class="border-bottom">
+                                    <span class="field-label">Nome Completo</span>
+                                    <div class="field-value">
+                                        <?= $this->escapeHtml($this->paciente->getPessoa()->getNome()) ?>
+                                    </div>
+                                </td>
+                                <td width="50%" class="border-bottom">
+                                    <span class="field-label">Telefone</span>
+                                    <div class="field-value">
+                                        <?= $this->escapeHtml($this->paciente->getPessoa()->getTelefone()) ?>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="border-bottom">
+                                    <span class="field-label">Data de Nascimento</span>
+                                    <div class="field-value">
+                                        <?= $this->paciente->getPessoa()->getNascimento()->format('d/m/Y') ?>
+                                    </div>
+                                </td>
+                                <td class="border-bottom">
+                                    <span class="field-label">Idade</span>
+                                    <div class="field-value">
+                                        <?= $this->paciente->getPessoa()->getNascimento()->diff(new \DateTime())->y ?> anos
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="border-bottom">
+                                    <span class="field-label">RG</span>
+                                    <div class="field-value">
+                                        <?= $this->escapeHtml($this->paciente->getPessoa()->getRg()) ?>
+                                    </div>
+                                </td>
+                                <td class="border-bottom">
+                                    <span class="field-label">CPF</span>
+                                    <div class="field-value">
+                                        <?= $this->escapeHtml($this->paciente->getPessoa()->getCpf()) ?>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" class="border-bottom">
+                                    <span class="field-label">Leito do Paciente</span>
+                                    <div class="field-value">
+                                        <?= $this->paciente->getLeito() ? $this->escapeHtml($this->paciente->getLeito()->getNumero()) : 'Sem leito' ?>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2">
+                                    <span class="field-label">Endereço</span>
+                                    <div class="field-value">
+                                        <?= $this->escapeHtml($endereco->getRua() . ", " . $endereco->getNumero() . " - " . $endereco->getEstado()->getNome() . ", ". $endereco->getEstado()->getSigla()) ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="header-section">
+                <h2 class="header-title">
+                    Histórico de Horários - Periodo: <?= $this->escapeHtml($this->startDate->format('d/m/Y')) ?> até <?= $this->escapeHtml($this->endDate->format('d/m/Y')) ?>
+                </h2>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th width="30%">Data</th>
+                    <th width="30%">Horário</th>
+                    <th width="30%">Ação</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($this->statusHistory as $status): ?>
+                    <tr>
+                        <td><?= $this->escapeHtml($status->getDataRegistro()->format("d/m/Y")) ?></td>
+                        <td><?= $this->escapeHtml($status->getDataRegistro()->format("H:i:s")) ?></td>
+                        <td><?= $this->escapeHtml($status->getEvento() ? "Acordado" : "Dormindo") ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
+
+
+<table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; margin-top: 5%">
+    <thead>
+    <tr>
+        <th colspan="2">Histórico de Status (Últimos 5 Dias)</th>
+    </tr>
+    <tr>
+        <th>Data</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>

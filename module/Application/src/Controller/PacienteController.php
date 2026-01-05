@@ -171,6 +171,7 @@ class PacienteController extends AbstractActionController
         }
 
         $paciente = $this->entityManager->find(Paciente::class, $id);
+
         if (!$paciente) {
             $this->flashMessenger()->addErrorMessage('Paciente não encontrado.');
             return $this->redirect()->toRoute('paciente');
@@ -391,8 +392,8 @@ class PacienteController extends AbstractActionController
                 'telefone' => $paciente->getPessoa()->getTelefone(),
                 'foto' => $paciente->getPessoa()->getFoto(),
                 'status' => $status ? [
-                    'evento' => $status[0]->getEvento(),
-                    'dataRegistro' => $status[0]->getDataRegistro()->format('d/m/Y H:i:s'),
+                    'evento' => $status->getEvento(),
+                    'dataRegistro' => $status->getDataRegistro()->format('d/m/Y H:i:s'),
                 ] : null,
             ];
         }
@@ -400,6 +401,61 @@ class PacienteController extends AbstractActionController
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $response->setContent(json_encode($pacientesArray));
+
+        return $response;
+    }
+
+    public function historicoAction()
+    {
+        $id = (int) $this->params()->fromRoute('id', 0);
+
+        if ($id === 0) {
+            $this->flashMessenger()->addErrorMessage('ID do paciente inválido.');
+            return $this->redirect()->toRoute('paciente');
+        }
+
+        $paciente = $this->entityManager->find(Paciente::class, $id);
+
+        if (!$paciente) {
+            $this->flashMessenger()->addErrorMessage('Paciente não encontrado.');
+            return $this->redirect()->toRoute('paciente');
+        }
+
+        $startDate = $this->params()->fromQuery('start_date');
+        $endDate = $this->params()->fromQuery('end_date');
+
+        if (empty($startDate) || empty($endDate)) {
+            $fiveDaysAgo = new \DateTime('-5 days');
+            $today = new \DateTime();
+            $startDateTime = $fiveDaysAgo;
+            $endDateTime = $today;
+        } else {
+            try {
+                $startDateTime = new \DateTime($startDate .  ' 00:00:00');
+                $endDateTime = new \DateTime($endDate . ' 23:59:59');
+            } catch (\Exception $e) {
+                $this->flashMessenger()->addErrorMessage('Formato de data inválido.');
+                return $this->redirect()->toRoute('paciente');
+            }
+        }
+
+        $statusHistory = $this->entityManager->getRepository(PacienteStatus::class)->findHistorico($paciente, $startDateTime, $endDateTime);
+
+        $renderer = $this->getEvent()->getApplication()->getServiceManager()->get('ViewRenderer');
+        $html = $renderer->render('application/relatorio/historico', [
+            'paciente' => $paciente,
+            'statusHistory' => $statusHistory,
+            'startDate' => $startDateTime,
+            'endDate' => $endDateTime,
+        ]);
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML($html);
+
+        // Return the PDF as a download
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/pdf');
+        $response->getHeaders()->addHeaderLine('Content-Disposition', 'inline; filename="historico_pessoal.pdf"');
+        $response->setContent($mpdf->Output('', 'S'));
 
         return $response;
     }

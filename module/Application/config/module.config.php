@@ -10,8 +10,11 @@ use Application\Controller\AuthController;
 use Application\Controller\Factory\AuthControllerFactory;
 use Application\Controller\Factory\LeitoControllerFactory;
 use Application\Controller\Factory\PacienteControllerFactory;
+use Application\Controller\Factory\RelatorioControllerFactory;
+use Application\Controller\IndexController;
 use Application\Controller\LeitoController;
 use Application\Controller\PacienteController;
+use Application\Controller\RelatorioController;
 use Application\Plugin\Login\AuthAdapter;
 use Application\Plugin\Login\AuthAdapterFactory;
 use Application\Plugin\Login\AuthenticationServiceFactory;
@@ -75,7 +78,7 @@ return [
                         'id_estado' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\IndexController::class,
+                        'controller' => \Application\Controller\IndexController::class,
                         'action'     => 'getCidades',
                     ],
                 ],
@@ -130,8 +133,8 @@ return [
                         'id'     => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\LeitoController::class,
-                        'action'     => 'listar',
+                        'controller' => Controller\RelatorioController::class,
+                        'action'     => 'index',
                     ],
                 ],
             ],
@@ -141,7 +144,11 @@ return [
         'factories' => [
             PacienteController::class => PacienteControllerFactory::class,
             LeitoController::class => LeitoControllerFactory::class,
+            RelatorioController::class => RelatorioControllerFactory::class,
             AuthController::class => AuthControllerFactory::class,
+            IndexController::class => function ($container) {
+                return new IndexController();
+            }
         ],
     ],
     'service_manager' => [
@@ -172,6 +179,9 @@ return [
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
+            'application/relatorio/frequencia-desperto' => __DIR__ . '/../view/application/relatorio/relatorio-tempo.phtml',
+            'application/relatorio/tempo-desperto' => __DIR__ . '/../view/application/relatorio/relatorio-tempo.phtml',
+            'application/relatorio/negacao-uso' => __DIR__ . '/../view/application/relatorio/relatorio-tempo.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',

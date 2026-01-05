@@ -37,6 +37,9 @@ $this->headTitle('Dashboard de Pacientes');
 
                             <div class="mt-auto">
                                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                                    <a href="<?= $this->url('paciente', ['action' => 'relatorio', 'id' => $paciente->getId()]) ?>" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-file"></i> Histórico Pessoal
+                                    </a>
                                     <a href="<?= $this->url('paciente', ['action' => 'editar', 'id' => $paciente->getId()]) ?>" class="btn btn-sm btn-outline-secondary">
                                         <i class="fas fa-edit"></i> Editar
                                     </a>
@@ -130,8 +133,9 @@ $this->headTitle('Dashboard de Pacientes');
                 `;
             } else {
                 pacientes.forEach(paciente => {
-                    const badgeClass = paciente.status && paciente.status.evento === 'Acordado' ? 'badge-primary' : 'badge-danger';
-                    const statusText = paciente.status ? paciente.status.evento : 'Indefinido';
+                    console.log(paciente)
+                    const badgeClass = paciente.status && paciente.status.evento === "1" ? 'bg-success' : 'bg-primary';
+                    const statusText = paciente.status && paciente.status.evento === "1" ? 'Acordado' : 'Dormindo';
                     const dataRegistro = paciente.status ? paciente.status.dataRegistro : 'N/A';
 
                     const card = `
@@ -150,6 +154,20 @@ $this->headTitle('Dashboard de Pacientes');
                                         <li><strong>CPF:</strong> ${paciente.cpf}</li>
                                         <li><strong>Telefone:</strong> ${paciente.telefone}</li>
                                     </ul>
+
+                                    <div class="mt-auto">
+                                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                                            <a href="/paciente/historico/${paciente.id}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-file"></i> Histórico Pessoal
+                                            </a>
+                                            <a href="/paciente/editar/${paciente.id}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit"></i> Editar
+                                            </a>
+                                            <a href="/paciente/excluir/${paciente.id}" class="btn btn-sm btn-outline-danger btn-delete-paciente">
+                                                <i class="fas fa-trash"></i> Excluir
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
