@@ -50,7 +50,7 @@ class ListenMqttCommand extends Command
         $this->mqttClient = new MqttClient($server, $port, $clientId);
 
         try {
-            $this->mqttClient->connect($connectionSettings, true); // true = clean session
+            $this->mqttClient->connect($connectionSettings, true);
             $io->success("Conectado ao broker MQTT em {$server}:{$port} com Client ID: {$clientId}");
         } catch (\Exception $e) {
             $io->error("Falha ao conectar ao broker MQTT: " . $e->getMessage());
